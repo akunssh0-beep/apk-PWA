@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PWA Automator Pro - it.adi.p</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- JSZip Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        playstore: '#01875f',
+                        android: {
+                            dark: '#1A1C1E',
+                            card: '#2D2F31',
+                            accent: '#D0E4FF'
+                        }
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                        '5xl': '3rem',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Smooth Background */
+        .bg-animate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: #f8fafc;
+        }
+        .dark .bg-animate {
+            background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+        }
+
+        /* Material Ripple Simulation */
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* Input Styles */
+        input, select {
+            transition: all 0.2s ease;
+        }
+
+        .drop-zone--over { 
+            border-color: #3b82f6; 
+            background: rgba(59, 130, 246, 0.05);
+            transform: scale(0.98);
+        }
+
+        /* Hide Number Input Arrows */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+
+    <!-- PWA Optimized by it.adi.p Automator -->
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body class="text-slate-900 dark:text-slate-200 min-h-screen bg-slate-50 dark:bg-[#0f172a] transition-colors duration-500 pb-10">
+
+    <div class="bg-animate"></div>
+
+    <!-- Top Bar / Navigation -->
+    <div class="max-w-xl mx-auto w-full px-6 pt-6 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
+                <i data-lucide="box" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="font-bold text-sm tracking-tight dark:text-white">it.adi.p</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <!-- Install this tool button (Hidden by default) -->
+            <button id="installToolBtn" class="hidden px-4 py-2 bg-blue-600 text-white text-[10px] font-bold rounded-xl shadow-lg flex items-center gap-2">
+                <i data-lucide="download" class="w-3 h-3"></i> INSTAL TOOL
+            </button>
+            <button id="themeToggle" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-yellow-400 transition-transform active:scale-90">
+                <i data-lucide="moon" id="moonIcon" class="w-5 h-5"></i>
+                <i data-lucide="sun" id="sunIcon" class="w-5 h-5 hidden"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-xl mx-auto w-full p-6 space-y-6">
+        
+        <!-- Header Section -->
+        <header class="py-4">
+            <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                PWA <span class="text-blue-600">Automator</span>
+            </h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1 font-medium">
+                Optimasi Mode Offline & Instalasi Android.
+            </p>
+        </header>
+
+        <!-- Main Form Card -->
+        <div class="bg-white dark:bg-slate-800/50 backdrop-blur-xl border border-slate-200 dark:border-slate-700/50 rounded-4xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-6">
+            
+            <!-- App Identity -->
+            <div class="space-y-4">
+                <div class="group">
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">Nama Aplikasi</label>
+                    <input type="text" id="appName" value="My Awesome App" 
+                        class="w-full mt-1 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="group">
+                        <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">Versi Build</label>
+                        <input type="text" id="appVersion" value="1.0.0" 
+                            class="w-full mt-1 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
+                    </div>
+                    <div class="group">
+                        <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">Warna Aksen</label>
+                        <div class="mt-1 flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3">
+                            <input type="color" id="themeColor" value="#3b82f6" class="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-none">
+                            <span id="colorHex" class="text-xs font-mono font-bold dark:text-slate-300">#3B82F6</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration -->
+            <div class="space-y-4 pt-2">
+                <div class="group">
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">Mode Pemuatan (Offline)</label>
+                    <select id="updateStrategy" class="w-full mt-1 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-blue-500 dark:text-white appearance-none cursor-pointer">
+                        <option value="auto">Instan (Cache First + Background Update)</option>
+                        <option value="manual">Konfirmasi (Network First + Offline Fallback)</option>
+                        <option value="cache-first">Maksimal Offline (Hemat Data)</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-900/30 p-4 rounded-3xl border border-slate-100 dark:border-slate-700/30">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-playstore/10 rounded-xl flex items-center justify-center">
+                            <i data-lucide="smartphone" class="w-5 h-5 text-playstore"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold dark:text-white">Instalasi Android</p>
+                            <p class="text-[10px] text-slate-500 italic">Prompt Instalasi Play Store UI</p>
+                        </div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="installPopup" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Upload Area -->
+            <div id="dropZone" class="relative group border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-4xl p-10 text-center transition-all duration-300 bg-slate-50/50 dark:bg-slate-900/20 overflow-hidden">
+                <input type="file" id="htmlInput" accept=".html" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+                <div id="uploadContent" class="space-y-4">
+                    <div class="w-16 h-16 bg-white dark:bg-slate-800 rounded-3xl flex items-center justify-center mx-auto shadow-sm group-hover:scale-110 transition-transform duration-500">
+                        <i data-lucide="folder-up" class="w-8 h-8 text-blue-500"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold dark:text-slate-200">Pilih / Drop Folder HTML</p>
+                        <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Semua file akan tersedia offline</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Area -->
+            <div id="actionArea" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <button onclick="processAndDownload()" class="btn-ripple w-full bg-slate-900 dark:bg-blue-600 hover:bg-black dark:hover:bg-blue-500 text-white font-bold py-5 rounded-3xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-3 active:scale-95">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                    BUAT PWA OFFLINE-READY
+                </button>
+            </div>
+
+            <!-- Status Box -->
+            <div id="messageBox" class="hidden p-4 rounded-2xl text-center text-[11px] font-bold uppercase tracking-wider animate-pulse"></div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="pt-4 flex flex-col items-center gap-4">
+            <div class="flex items-center gap-2 px-6 py-2 bg-white dark:bg-slate-800/50 rounded-full border border-slate-200 dark:border-slate-700">
+                <i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>
+                <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">PWA Specification v3.0 Compliant</span>
+            </div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">it.adi.p © 2024</p>
+        </footer>
+    </div>
+
+    <script>
+        // Inisialisasi ikon
+        lucide.createIcons();
+
+        // PWA Tool Install Logic
+        let toolInstallPrompt;
+        const installToolBtn = document.getElementById('installToolBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            toolInstallPrompt = e;
+            installToolBtn.classList.remove('hidden');
+        });
+
+        installToolBtn.addEventListener('click', async () => {
+            if (toolInstallPrompt) {
+                toolInstallPrompt.prompt();
+                const { outcome } = await toolInstallPrompt.userChoice;
+                if (outcome === 'accepted') installToolBtn.classList.add('hidden');
+                toolInstallPrompt = null;
+            }
+        });
+
+        const htmlInput = document.getElementById('htmlInput');
+        const dropZone = document.getElementById('dropZone');
+        const uploadContent = document.getElementById('uploadContent');
+        const actionArea = document.getElementById('actionArea');
+        const themeColorInput = document.getElementById('themeColor');
+        const colorHexDisplay = document.getElementById('colorHex');
+        const messageBox = document.getElementById('messageBox');
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+
+        let selectedFiles = [];
+
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            moonIcon.classList.toggle('hidden');
+            sunIcon.classList.toggle('hidden');
+        });
+
+        themeColorInput.addEventListener('input', (e) => {
+            colorHexDisplay.textContent = e.target.value.toUpperCase();
+        });
+
+        htmlInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        ['dragenter', 'dragover'].forEach(name => {
+            dropZone.addEventListener(name, (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drop-zone--over');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(name => {
+            dropZone.addEventListener(name, (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drop-zone--over');
+            });
+        });
+
+        dropZone.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files));
+
+        function handleFiles(files) {
+            const htmlFiles = Array.from(files).filter(f => f.name.toLowerCase().endsWith('.html'));
+            if (htmlFiles.length > 0) {
+                selectedFiles = htmlFiles;
+                uploadContent.innerHTML = `
+                    <div class="w-16 h-16 bg-green-500/10 rounded-3xl flex items-center justify-center mx-auto scale-110">
+                        <i data-lucide="check-circle" class="w-8 h-8 text-green-500"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-green-600">${selectedFiles.length} File HTML Dimuat</p>
+                        <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Tersedia untuk Mode Offline</p>
+                    </div>
+                `;
+                actionArea.classList.remove('hidden');
+                lucide.createIcons();
+            } else {
+                showMsg("Hanya file .html yang diizinkan", "error");
+            }
+        }
+
+        function showMsg(text, type) {
+            messageBox.textContent = text;
+            messageBox.className = "p-4 rounded-2xl text-center text-[11px] font-bold uppercase tracking-wider animate-pulse";
+            messageBox.classList.add(type === 'error' ? 'bg-red-500/10' : 'bg-green-500/10');
+            messageBox.classList.add(type === 'error' ? 'text-red-500' : 'text-green-600');
+            messageBox.classList.remove('hidden');
+        }
+
+        async function processAndDownload() {
+            try {
+                const appName = document.getElementById('appName').value.trim() || "My App";
+                const themeColor = themeColorInput.value;
+                const appVer = document.getElementById('appVersion').value.trim() || "1.0.0";
+                const strategy = document.getElementById('updateStrategy').value;
+                const isPopup = document.getElementById('installPopup').checked;
+                const safeName = appName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                
+                const zip = new JSZip();
+                const appFolder = zip.folder(safeName);
+
+                // PWA Core Injection
+                const pwaHeader = `
+    <!-- PWA Optimized by it.adi.p Automator -->
+    <meta name="theme-color" content="${themeColor}">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">`;
+
+                const playStoreUI = isPopup ? `
+    <style>
+        #pwa-install-ui { position: fixed; bottom: -120%; left: 0; width: 100%; background: #ffffff; z-index: 10000; padding: 24px; box-shadow: 0 -12px 48px rgba(0,0,0,0.2); border-radius: 32px 32px 0 0; transition: 0.7s cubic-bezier(0.19, 1, 0.22, 1); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; display: flex; align-items: center; gap: 20px; color: #202124; }
+        #pwa-install-ui.visible { bottom: 0; }
+        .pwa-icon-box { width: 68px; height: 68px; border-radius: 16px; background: #f1f3f4; background-image: url('icon-192.png'); background-size: cover; background-position: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .pwa-info { flex: 1; }
+        .pwa-name { font-weight: 700; font-size: 19px; margin: 0; letter-spacing: -0.02em; }
+        .pwa-meta { font-size: 12px; color: #5f6368; font-weight: 500; }
+        .pwa-stars { color: #01875f; font-size: 11px; margin-top: 3px; }
+        .pwa-install-btn { background: #01875f; color: #ffffff; border: none; padding: 12px 28px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+        .pwa-install-btn:active { background: #016b4c; }
+    </style>
+    <div id="pwa-install-ui">
+        <div class="pwa-icon-box"></div>
+        <div class="pwa-info">
+            <p class="pwa-name">${appName}</p>
+            <span class="pwa-meta">Versi ${appVer} • Siap Offline</span>
+            <div class="pwa-stars">★★★★★ <span style="color:#5f6368;margin-left:4px">Play Store Standard</span></div>
+        </div>
+        <button class="pwa-install-btn" id="pwa-cta">Instal</button>
+    </div>` : "";
+
+                const pwaBody = `
+    ${playStoreUI}
+    <script>
+      let pwaPrompt;
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').then(reg => {
+            console.log('SW Registered');
+            ${strategy === 'auto' ? 'reg.onupdatefound = () => { const worker = reg.installing; worker.onstatechange = () => { if (worker.state === "installed" && navigator.serviceWorker.controller) window.location.reload(); }; };' : ''}
+          });
+        });
+      }
+      ${isPopup ? `
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault(); pwaPrompt = e;
+        setTimeout(() => document.getElementById('pwa-install-ui')?.classList.add('visible'), 2500);
+      });
+      document.getElementById('pwa-cta')?.addEventListener('click', async () => {
+        if (pwaPrompt) { 
+            pwaPrompt.prompt(); 
+            const { outcome } = await pwaPrompt.userChoice; 
+            if (outcome === 'accepted') document.getElementById('pwa-install-ui').classList.remove('visible');
+            pwaPrompt = null; 
+        }
+      });` : ''}
+    <\/script>`;
+
+                const cacheAssets = ['./', './index.html', './manifest.json'];
+                let entryPoint = "index.html";
+
+                for (const file of selectedFiles) {
+                    let content = await file.text();
+                    
+                    // Smart Injection
+                    const headInject = /<\/head>/i;
+                    const bodyInject = /<\/body>/i;
+
+                    content = headInject.test(content) ? content.replace(headInject, pwaHeader + '\n</head>') : pwaHeader + content;
+                    content = bodyInject.test(content) ? content.replace(bodyInject, pwaBody + '\n
+    
+    <style>
+        #pwa-install-ui { position: fixed; bottom: -120%; left: 0; width: 100%; background: #ffffff; z-index: 10000; padding: 24px; box-shadow: 0 -12px 48px rgba(0,0,0,0.2); border-radius: 32px 32px 0 0; transition: 0.7s cubic-bezier(0.19, 1, 0.22, 1); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; display: flex; align-items: center; gap: 20px; color: #202124; }
+        #pwa-install-ui.visible { bottom: 0; }
+        .pwa-icon-box { width: 68px; height: 68px; border-radius: 16px; background: #f1f3f4; background-image: url('icon-192.png'); background-size: cover; background-position: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .pwa-info { flex: 1; }
+        .pwa-name { font-weight: 700; font-size: 19px; margin: 0; letter-spacing: -0.02em; }
+        .pwa-meta { font-size: 12px; color: #5f6368; font-weight: 500; }
+        .pwa-stars { color: #01875f; font-size: 11px; margin-top: 3px; }
+        .pwa-install-btn { background: #01875f; color: #ffffff; border: none; padding: 12px 28px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+        .pwa-install-btn:active { background: #016b4c; }
+    </style>
+    <div id="pwa-install-ui">
+        <div class="pwa-icon-box"></div>
+        <div class="pwa-info">
+            <p class="pwa-name">PWA APK</p>
+            <span class="pwa-meta">Versi 1.0.0 • Siap Offline</span>
+            <div class="pwa-stars">★★★★★ <span style="color:#5f6368;margin-left:4px">Play Store Standard</span></div>
+        </div>
+        <button class="pwa-install-btn" id="pwa-cta">Instal</button>
+    </div>
+    <script>
+      let pwaPrompt;
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').then(reg => {
+            console.log('SW Registered');
+            reg.onupdatefound = () => { const worker = reg.installing; worker.onstatechange = () => { if (worker.state === "installed" && navigator.serviceWorker.controller) window.location.reload(); }; };
+          });
+        });
+      }
+      
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault(); pwaPrompt = e;
+        setTimeout(() => document.getElementById('pwa-install-ui')?.classList.add('visible'), 2500);
+      });
+      document.getElementById('pwa-cta')?.addEventListener('click', async () => {
+        if (pwaPrompt) { 
+            pwaPrompt.prompt(); 
+            const { outcome } = await pwaPrompt.userChoice; 
+            if (outcome === 'accepted') document.getElementById('pwa-install-ui').classList.remove('visible');
+            pwaPrompt = null; 
+        }
+      });
+    </script>
+</body>') : content + pwaBody;
+
+                    appFolder.file(file.name, content);
+                    
+                    if (file.name.toLowerCase() === 'index.html') {
+                        entryPoint = "index.html";
+                    } else {
+                        cacheAssets.push('./' + file.name);
+                    }
+                }
+
+                const manifest = {
+                    "name": appName,
+                    "short_name": appName.substring(0, 12),
+                    "start_url": entryPoint,
+                    "display": "standalone",
+                    "orientation": "portrait-primary",
+                    "background_color": "#ffffff",
+                    "theme_color": themeColor,
+                    "version": appVer,
+                    "icons": [
+                        { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+                        { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+                    ]
+                };
+
+                const swCode = `// SW Build v${appVer} - it.adi.p Automator
+const CACHE_NAME = '${safeName}-v${Date.now()}';
+const ASSETS = ${JSON.stringify(cacheAssets)};
+
+self.addEventListener('install', (event) => {
+    ${strategy === 'auto' ? 'self.skipWaiting();' : ''}
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    );
+});
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches.keys().then((keys) => Promise.all(
+            keys.map((k) => k !== CACHE_NAME && caches.delete(k))
+        ))
+    );
+    ${strategy === 'auto' ? 'return self.clients.claim();' : ''}
+});
+
+self.addEventListener('fetch', (event) => {
+    ${strategy === 'cache-first' ? 
+        "event.respondWith(caches.match(event.request).then((res) => res || fetch(event.request)));" : 
+        "event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));"}
+});`;
+
+                appFolder.file("manifest.json", JSON.stringify(manifest, null, 2));
+                appFolder.file("sw.js", swCode);
+
+                showMsg("Mengemas paket offline...", "success");
+                const blob = await zip.generateAsync({type:"blob"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${safeName}_offline_v${appVer}.zip`;
+                a.click();
+                
+                showMsg("Sukses! PWA Siap diinstal & offline.", "success");
+            } catch (err) {
+                console.error(err);
+                showMsg("Gagal membuat paket PWA!", "error");
+            }
+        }
+    </script>
+</body>
+</html>
