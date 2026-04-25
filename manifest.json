@@ -1,12 +1,11 @@
 {
-  "name": "PWA APK",
-  "short_name": "PWA APK",
-  "start_url": "index.html",
+  "name": "PWA Pro",
+  "short_name": "PWA Pro",
+  "start_url": "index.html?v=1777132027500",
   "display": "standalone",
-  "orientation": "portrait-primary",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
-  "version": "1.0.0",
+  "version": "1777132027500",
   "icons": [
     {
       "src": "icon-192.png",
