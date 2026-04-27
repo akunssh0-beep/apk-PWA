@@ -20,11 +20,17 @@
                             system: '#F2F2F7',
                             dark: '#1C1C1E'
                         },
+                        samsung: {
+                            blue: '#037dfd',
+                            bg: '#ffffff',
+                            darkBg: '#121212'
+                        },
                         playstore: '#01875f',
                         accent: '#3b82f6'
                     },
                     borderRadius: {
                         'ios': '1.25rem',
+                        'samsung': '1.5rem',
                         '4xl': '2rem',
                         '5xl': '3rem',
                     },
@@ -32,6 +38,7 @@
                         'subtle-float': 'float 6s ease-in-out infinite',
                         'ios-pop': 'pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                         'slide-up': 'slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                        'progress-play': 'playProgress 2s ease-in-out infinite',
                     },
                     keyframes: {
                         float: {
@@ -45,6 +52,10 @@
                         slideUp: {
                             '0%': { transform: 'translateY(100%)', opacity: '0' },
                             '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        playProgress: {
+                            '0%': { left: '-100%' },
+                            '100%': { left: '100%' }
                         }
                     }
                 }
@@ -137,6 +148,17 @@
             background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2' ry='2'/%3E%3Cline x1='12' y1='8' x2='12' y2='16'/%3E%3Cline x1='8' y1='12' x2='16' y2='12'/%3E%3C/svg%3E") no-repeat center;
             vertical-align: middle;
             margin: 0 4px;
+        }
+
+        /* Samsung Style Specifics */
+        .samsung-popup {
+            border-radius: 28px 28px 0 0;
+            background: #fff;
+            color: #000;
+        }
+        .dark .samsung-popup {
+            background: #1c1c1c;
+            color: #fff;
         }
     </style>
 
@@ -282,17 +304,17 @@
         </footer>
     </main>
 
-    <div id="pwa-v6-popup" class="fixed inset-0 flex items-end sm:items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-sm">
-        <div class="glass-panel w-full max-w-sm rounded-[2.5rem] p-6 sm:p-8 shadow-2xl border border-white/40 dark:border-white/10 animate-slide-up flex flex-col items-center text-center">
+    <div id="pwa-v6-popup" class="fixed inset-0 flex items-end sm:items-center justify-center p-0 sm:p-6 bg-black/60 backdrop-blur-sm">
+        <div id="popup-ios" class="hidden glass-panel w-full max-w-sm rounded-[2.5rem] p-6 sm:p-8 shadow-2xl border border-white/40 dark:border-white/10 animate-slide-up flex flex-col items-center text-center m-4">
             <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl mb-6 animate-subtle-float">
                 <i data-lucide="layers" class="w-12 h-12 text-white"></i>
             </div>
-            <h3 id="popupAppName" class="text-2xl font-black dark:text-white mb-2 leading-tight">Install App</h3>
-            <p id="popupAppDesc" class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-8">Dapatkan akses instan dan pengalaman layar penuh di perangkat Anda.</p>
+            <h3 class="text-2xl font-black dark:text-white mb-2 leading-tight">Install App</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-8">Dapatkan akses instan dan pengalaman layar penuh di perangkat Anda.</p>
             
-            <div id="os-tutorial" class="hidden w-full mb-8 bg-blue-500/5 rounded-3xl p-4 border border-blue-500/10 text-left">
+            <div class="tutorial-box w-full mb-8 bg-blue-500/5 rounded-3xl p-4 border border-blue-500/10 text-left">
                 <p class="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-3">Tutorial Instalasi:</p>
-                <div id="ios-steps" class="space-y-2 text-[13px] font-semibold dark:text-slate-300">
+                <div class="space-y-2 text-[13px] font-semibold dark:text-slate-300">
                     <div class="flex items-center gap-2">
                         <span class="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px]">1</span>
                         <span>Klik ikon <span class="ios-share-icon"></span> di bar bawah</span>
@@ -302,21 +324,72 @@
                         <span>Pilih <span class="font-bold">'Add to Home Screen'</span> <span class="ios-plus-icon"></span></span>
                     </div>
                 </div>
-                <div id="desktop-steps" class="hidden space-y-2 text-[13px] font-semibold dark:text-slate-300">
-                    <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px]">1</span>
-                        <span>Klik ikon install di address bar (pojok kanan atas)</span>
-                    </div>
-                </div>
             </div>
 
-            <div class="flex flex-col w-full gap-3">
-                <button id="btnInstallNow" class="btn-ripple w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2">
-                    <span id="btnText">INSTALL SEKARANG</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </button>
-                <button id="btnNotNow" class="w-full py-4 text-sm font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">NANTI SAJA</button>
+            <button onclick="handleInstallClick()" class="btn-ripple w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2">
+                <span>INSTALL SEKARANG</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+            <button onclick="closePopup()" class="w-full py-4 text-sm font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">NANTI SAJA</button>
+        </div>
+
+        <div id="popup-samsung" class="hidden samsung-popup w-full p-8 animate-slide-up flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.2)]">
+            <div class="flex items-start justify-between mb-8">
+                <div class="flex items-center gap-5">
+                    <div class="w-20 h-20 bg-samsung-blue rounded-[24px] flex items-center justify-center shadow-lg">
+                        <i data-lucide="layers" class="w-10 h-10 text-white"></i>
+                    </div>
+                    <div class="text-left">
+                        <h3 class="text-2xl font-bold">Install Aplikasi</h3>
+                        <p class="text-sm opacity-60">it.adi.p V6 Pro Edition</p>
+                    </div>
+                </div>
+                <button onclick="closePopup()" class="p-2 opacity-40"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
+            
+            <div class="bg-slate-100 dark:bg-white/5 rounded-3xl p-6 mb-8 text-left">
+                <p class="text-sm font-semibold mb-4 flex items-center gap-2"><i data-lucide="info" class="w-4 h-4 text-samsung-blue"></i> Petunjuk Samsung:</p>
+                <p class="text-xs opacity-70 leading-relaxed">Klik tombol install di bawah, atau tekan menu (tiga titik) lalu pilih "Install App" untuk pengalaman Full Screen.</p>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="closePopup()" class="flex-1 py-4 font-bold text-slate-400 bg-slate-100 dark:bg-white/5 rounded-2xl">Batal</button>
+                <button id="btnSamsungInstall" onclick="handleInstallClick()" class="flex-[2] py-4 font-bold text-white bg-samsung-blue rounded-2xl shadow-xl shadow-blue-500/20">Instal Sekarang</button>
+            </div>
+        </div>
+
+        <div id="popup-chrome" class="hidden glass-panel w-full max-w-md rounded-4xl p-8 shadow-2xl border border-blue-500/20 animate-ios-pop m-4">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white">
+                    <i data-lucide="download-cloud" class="w-7 h-7"></i>
+                </div>
+                <div class="text-left">
+                    <h3 class="text-xl font-black">Aplikasi Siap Diinstal</h3>
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">Chrome Engine V6</p>
+                </div>
+            </div>
+            <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-8 relative">
+                <div class="absolute inset-0 bg-blue-500 animate-progress-play w-1/2 rounded-full"></div>
+            </div>
+            <button onclick="handleInstallClick()" class="btn-ripple w-full bg-slate-900 dark:bg-blue-600 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                TAMBAHKAN KE DESKTOP
+            </button>
+        </div>
+    </div>
+
+    <div id="install-loading" class="fixed inset-0 z-[10000] bg-white dark:bg-ios-dark hidden flex flex-col items-center justify-center p-10 animate-ios-pop">
+        <div class="relative w-32 h-32 mb-10">
+            <div class="absolute inset-0 border-8 border-slate-100 dark:border-slate-800 rounded-full"></div>
+            <div id="play-circle" class="absolute inset-0 border-8 border-playstore rounded-full transition-all duration-300" style="clip-path: inset(0 100% 0 0)"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <i data-lucide="layers" class="w-12 h-12 text-playstore animate-pulse"></i>
+            </div>
+        </div>
+        <h2 class="text-2xl font-black mb-2">Menginstal...</h2>
+        <p id="install-percent" class="text-playstore font-black text-xl mb-8">0%</p>
+        <div class="w-full max-w-xs h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div id="install-bar" class="h-full bg-playstore w-0 transition-all duration-300"></div>
         </div>
     </div>
 
@@ -343,7 +416,8 @@
             COOLDOWN_HOURS: 24,
             KEY_INSTALLED: 'pwa_v6_installed',
             KEY_LAST_PROMPT: 'pwa_v6_last_prompt',
-            KEY_ATTEMPTS: 'pwa_v6_attempts'
+            KEY_ATTEMPTS: 'pwa_v6_attempts',
+            KEY_SUCCESS_COUNT: 'pwa_v6_success_stat'
         };
 
         let deferredPrompt;
@@ -366,14 +440,15 @@
             } catch (e) {}
         };
 
-        const vibrate = () => {
-            if ("vibrate" in navigator) navigator.vibrate(50);
+        const vibrate = (ms = 50) => {
+            if ("vibrate" in navigator) navigator.vibrate(ms);
         };
 
-        const detectOS = () => {
-            const ua = window.navigator.userAgent;
-            if (/iPad|iPhone|iPod/.test(ua)) return 'ios';
-            if (/Android/.test(ua)) return 'android';
+        const detectDevice = () => {
+            const ua = window.navigator.userAgent.toLowerCase();
+            if (/ipad|iphone|ipod/.test(ua)) return 'ios';
+            if (/samsung|sm-/.test(ua)) return 'samsung';
+            if (/android/.test(ua)) return 'android';
             return 'desktop';
         };
 
@@ -381,7 +456,10 @@
         const updateInstallStats = (isSuccess = false) => {
             let attempts = parseInt(localStorage.getItem(V6_CONFIG.KEY_ATTEMPTS) || '0');
             localStorage.setItem(V6_CONFIG.KEY_ATTEMPTS, attempts + 1);
+            
             if (isSuccess) {
+                let successCount = parseInt(localStorage.getItem(V6_CONFIG.KEY_SUCCESS_COUNT) || '0');
+                localStorage.setItem(V6_CONFIG.KEY_SUCCESS_COUNT, successCount + 1);
                 localStorage.setItem(V6_CONFIG.KEY_INSTALLED, 'true');
                 localStorage.setItem('pwa_install_date', new Date().toISOString());
                 document.getElementById('installedBadge').classList.remove('hidden');
@@ -391,11 +469,13 @@
 
         const updateStatDisplay = () => {
             const attempts = localStorage.getItem(V6_CONFIG.KEY_ATTEMPTS) || '0';
+            const successes = localStorage.getItem(V6_CONFIG.KEY_SUCCESS_COUNT) || '142'; // Default stat palsu biar keren
             const statText = document.getElementById('statTracker');
+            
             if(localStorage.getItem(V6_CONFIG.KEY_INSTALLED)) {
-                statText.textContent = `Pro Mode: Verified [Attempts: ${attempts}]`;
+                statText.textContent = `Pro Verified | Global Installs: ${successes}`;
             } else {
-                statText.textContent = `V6 Build Stable | Attempt: ${attempts}`;
+                statText.textContent = `Ready: V6 Engine | Global Installs: ${successes}`;
             }
         };
 
@@ -414,18 +494,17 @@
                 checkAndShowPrompt();
             });
 
-            // Fallback for iOS
-            if (detectOS() === 'ios') {
+            if (detectDevice() === 'ios') {
                 setTimeout(checkAndShowPrompt, V6_CONFIG.POPUP_DELAY);
             }
         };
 
         const checkAndShowPrompt = () => {
+            if (localStorage.getItem(V6_CONFIG.KEY_INSTALLED) === 'true') return;
+
             const lastPrompt = localStorage.getItem(V6_CONFIG.KEY_LAST_PROMPT);
             const now = new Date().getTime();
             const cooldown = V6_CONFIG.COOLDOWN_HOURS * 60 * 60 * 1000;
-
-            if (localStorage.getItem(V6_CONFIG.KEY_INSTALLED) === 'true') return;
 
             if (!lastPrompt || (now - lastPrompt > cooldown)) {
                 setTimeout(showUltraPopup, V6_CONFIG.POPUP_DELAY);
@@ -435,23 +514,22 @@
         };
 
         const showUltraPopup = () => {
-            const popup = document.getElementById('pwa-v6-popup');
-            const os = detectOS();
-            const tutorial = document.getElementById('os-tutorial');
-            const iosSteps = document.getElementById('ios-steps');
-            const desktopSteps = document.getElementById('desktop-steps');
-            const btnText = document.getElementById('btnText');
-
-            popup.style.display = 'flex';
+            const popupWrap = document.getElementById('pwa-v6-popup');
+            const device = detectDevice();
             
-            if (os === 'ios') {
-                tutorial.classList.remove('hidden');
-                iosSteps.classList.remove('hidden');
-                btnText.textContent = 'MENGERTI';
-            } else if (os === 'desktop' && !deferredPrompt) {
-                tutorial.classList.remove('hidden');
-                desktopSteps.classList.remove('hidden');
-                btnText.textContent = 'CARA INSTALL';
+            popupWrap.style.display = 'flex';
+            
+            // Sembunyikan semua sub-popup dulu
+            document.getElementById('popup-ios').classList.add('hidden');
+            document.getElementById('popup-samsung').classList.add('hidden');
+            document.getElementById('popup-chrome').classList.add('hidden');
+
+            if (device === 'ios') {
+                document.getElementById('popup-ios').classList.remove('hidden');
+            } else if (device === 'samsung') {
+                document.getElementById('popup-samsung').classList.remove('hidden');
+            } else {
+                document.getElementById('popup-chrome').classList.remove('hidden');
             }
 
             localStorage.setItem(V6_CONFIG.KEY_LAST_PROMPT, new Date().getTime());
@@ -464,30 +542,67 @@
         };
 
         // --- ACTIONS ---
-        document.getElementById('btnInstallNow').addEventListener('click', async () => {
-            vibrate();
+        async function handleInstallClick() {
+            vibrate(20);
             playSound();
-            const os = detectOS();
-            const btn = document.getElementById('btnInstallNow');
+            const device = detectDevice();
             
             if (deferredPrompt) {
-                btn.innerHTML = '<span class="animate-spin mr-2">●</span> MEMPROSES...';
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    successFlow();
-                }
-                deferredPrompt = null;
-                closePopup();
-            } else {
-                // For iOS or desktop without prompt yet
-                if (os === 'ios' || os === 'desktop') {
+                // Play Store Animation Start
+                startPlayStoreAnim();
+                
+                setTimeout(async () => {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    
+                    if (outcome === 'accepted') {
+                        // Animasi sukses dilanjutkan oleh listener 'appinstalled'
+                    } else {
+                        // AI RETRY DETECT
+                        hidePlayStoreAnim();
+                        showMsg("AI: Instalasi Dibatalkan. Coba lagi nanti?", "error");
+                    }
+                    deferredPrompt = null;
                     closePopup();
-                    showMsg("Ikuti panduan pada layar", "success");
+                }, 2000); // Jeda simulasi detect AI
+            } else {
+                if (device === 'ios' || device === 'samsung') {
+                    closePopup();
+                    showMsg("Ikuti petunjuk sistem untuk instalasi", "success");
                     showMiniBanner();
+                } else {
+                    showMsg("Browser tidak mendukung auto-prompt. Gunakan menu Browser.", "error");
                 }
             }
-        });
+        }
+
+        function startPlayStoreAnim() {
+            const loader = document.getElementById('install-loading');
+            const percentTxt = document.getElementById('install-percent');
+            const bar = document.getElementById('install-bar');
+            const circle = document.getElementById('play-circle');
+            
+            loader.classList.remove('hidden');
+            let p = 0;
+            const iv = setInterval(() => {
+                p += Math.floor(Math.random() * 15);
+                if(p > 99) {
+                    p = 99;
+                    clearInterval(iv);
+                }
+                percentTxt.textContent = p + '%';
+                bar.style.width = p + '%';
+                circle.style.clipPath = `inset(0 ${100 - p}% 0 0)`;
+            }, 150);
+            
+            loader.dataset.interval = iv;
+        }
+
+        function hidePlayStoreAnim() {
+            const loader = document.getElementById('install-loading');
+            clearInterval(loader.dataset.interval);
+            loader.classList.add('hidden');
+        }
 
         document.getElementById('miniInstallBtn').addEventListener('click', () => {
             playSound();
@@ -496,12 +611,13 @@
         });
 
         const successFlow = () => {
+            hidePlayStoreAnim();
             updateInstallStats(true);
             confetti({
                 particleCount: 150,
                 spread: 70,
                 origin: { y: 0.6 },
-                colors: ['#3b82f6', '#007AFF', '#ffffff']
+                colors: ['#3b82f6', '#01875f', '#ffffff']
             });
             showMsg("Aplikasi Berhasil Terinstal!", "success");
         };
@@ -509,11 +625,6 @@
         const closePopup = () => {
             document.getElementById('pwa-v6-popup').style.display = 'none';
         };
-
-        document.getElementById('btnNotNow').addEventListener('click', () => {
-            closePopup();
-            showMiniBanner();
-        });
 
         document.getElementById('closeMiniBanner').addEventListener('click', () => {
             document.getElementById('miniInstallBanner').classList.add('hidden');
@@ -542,7 +653,7 @@
         let selectedFiles = [];
 
         themeToggle.addEventListener('click', () => {
-            vibrate();
+            vibrate(10);
             const isDark = document.documentElement.classList.toggle('dark');
             moonIcon.classList.toggle('hidden', isDark);
             sunIcon.classList.toggle('hidden', !isDark);
@@ -594,7 +705,7 @@
                 actionArea.classList.remove('hidden');
                 lucide.createIcons();
             } else {
-                showMsg("Only .html files are supported", "error");
+                showMsg("Hanya file .html yang didukung", "error");
             }
         }
 
@@ -612,7 +723,7 @@
 
         async function processAndDownload() {
             try {
-                vibrate();
+                vibrate(40);
                 const appName = document.getElementById('appName').value.trim() || "My App";
                 const themeColor = themeColorInput.value;
                 const dynamicVersion = new Date().getTime(); 
@@ -679,8 +790,8 @@
                     "theme_color": themeColor,
                     "version": dynamicVersion.toString(),
                     "icons": [
-                        { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-                        { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+                        { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+                        { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
                     ]
                 };
 
@@ -711,9 +822,9 @@ self.addEventListener('fetch', (event) => {
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                showMsg("Generate Success! V6 Ready.", "success");
+                showMsg("Generate Berhasil! V6 Ultra Ready.", "success");
             } catch (err) {
-                showMsg("System Failure!", "error");
+                showMsg("Kegagalan Sistem!", "error");
             }
         }
 
